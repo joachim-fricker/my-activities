@@ -1,0 +1,15 @@
+{
+  "name": "my-activities",
+  "version": "1.0.0",
+  "description": "export gamin data into sqllite",
+  "license": "ISC",
+  "author": "Joachim Fricker",
+  "type": "module",
+  "main": "import-data",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "sqlite3": "^5.1.7"
+  }
+}
