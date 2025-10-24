@@ -5,7 +5,11 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+//const minimist = require('minimist');
+import minimist from 'minimist';
 
+// we make this global
+var argv;
 class JsonToSQLite {
     constructor(dbPath = './data.db') {
         this.dbPath = dbPath;
@@ -61,13 +65,13 @@ class JsonToSQLite {
 
     // find all JSON-Files
     async findJsonFiles(directory) {
-        
+
         try {
             const files = await fs.readdir(directory);
-            const jsonFiles = files.filter(file => 
+            const jsonFiles = files.filter(file =>
                 path.extname(file).toLowerCase() === '.json'
             );
-            
+
             console.log(`📁 ${jsonFiles.length} JSON-files found in ${directory}`);
             return jsonFiles.map(file => path.join(directory, file));
         } catch (error) {
@@ -81,7 +85,7 @@ class JsonToSQLite {
         try {
             const data = await fs.readFile(filePath, 'utf8');
             const jsonData = JSON.parse(data);
-            
+
             return {
                 filename: path.basename(filePath),
                 data: jsonData,
@@ -95,34 +99,37 @@ class JsonToSQLite {
 
     // Daten in Datenbank einfügen
     async insertJsonData(retValue) {
-    
-        
 
+
+
+        var filename = retValue.filename;
         var jsonData = retValue.data;
-        var filename= retValue.filename;
-        var uuid= jsonData.activityUUID.uuid;
-        var activityName= jsonData.activityName;
-        var activityType= jsonData.activityTypeDTO.typeKey;
-        var distance= jsonData.summaryDTO.distance;
-        var duration= jsonData.summaryDTO.duration;
-        var startTime=jsonData.summaryDTO.distance;
-        var startLatitude= jsonData.summaryDTO.startLatitude;
-        var startLongitude= jsonData.summaryDTO.startLongitude;
-        var elevationGain= jsonData.summaryDTO.elevationGain;
-        var maxElevation= jsonData.summaryDTO.maxElevation;
-        var averageHR= jsonData.summaryDTO.averageHR
-        var locationName= jsonData.locationName;
+        if (!argv.nocleanup) {
+            this.cleanupRecords(jsonData);
+        }
+        var uuid = jsonData.activityUUID.uuid;
+        var activityName = jsonData.activityName;
+        var activityType = jsonData.activityTypeDTO.typeKey;
+        var distance = jsonData.summaryDTO.distance;
+        var duration = jsonData.summaryDTO.duration;
+        var startTime = jsonData.summaryDTO.startTimeGMT;
+        var startLatitude = jsonData.summaryDTO.startLatitude;
+        var startLongitude = jsonData.summaryDTO.startLongitude;
+        var elevationGain = jsonData.summaryDTO.elevationGain;
+        var maxElevation = jsonData.summaryDTO.maxElevation;
+        var averageHR = jsonData.summaryDTO.averageHR
+        var locationName = jsonData.locationName;
 
-        
 
-        
+
+
         return new Promise((resolve, reject) => {
             const query = `
                 INSERT INTO activities (filename, uuid, activityName, activityType, distance, duration, startTime, startLatitude, startLongitude, elevationGain, maxElevation, averageHR, locationName)
                 VALUES (?, ?, ? ,? ,?,?, ?, ? ,? ,?,?,?,?)
             `;
 
-            this.db.run(query, [filename,uuid, activityName, activityType, distance, duration, startTime, startLatitude, startLongitude, elevationGain, maxElevation, averageHR, locationName ], function(err) {
+            this.db.run(query, [filename, uuid, activityName, activityType, distance, duration, startTime, startLatitude, startLongitude, elevationGain, maxElevation, averageHR, locationName], function (err) {
                 if (err) {
                     reject(err);
                 } else {
@@ -133,6 +140,13 @@ class JsonToSQLite {
         });
     }
 
+    // cleanup Records
+    cleanupRecords(jsonData) {
+        if (jsonData.activityTypeDTO.typeKey == 'other') {
+            console.log("Converting other to backcountry_skiing")
+            jsonData.activityTypeDTO.typeKey = 'backcountry_skiing';
+        }
+    }
     // Hauptfunktion
     async processDirectory(directoryPath) {
         try {
@@ -151,9 +165,9 @@ class JsonToSQLite {
             for (const filePath of jsonFiles) {
                 try {
                     const jsonData = await this.parseJsonFile(filePath);
-                    
+
                     if (jsonData) {
-                       await this.insertJsonData(jsonData);
+                        await this.insertJsonData(jsonData);
                         successCount++;
                     } else {
                         errorCount++;
@@ -201,17 +215,27 @@ class JsonToSQLite {
 
 // Hauptprogramm
 async function main() {
-    const directoryPath = process.argv[2] || './activities';
+    const directoryPath = './activities';
 
-    console.log("Here we are");
-    
+    argv = minimist(process.argv.slice(2), {
+        boolean: ['nocleanup'],
+        alias: {
+            n: 'nocleanup'
+        },
+        default: {
+            nocleanup: false,
+        }
+    });
+
+
+
     try {
         // Prüfen ob Verzeichnis existiert
         await fs.access(directoryPath);
-        
+
         const processor = new JsonToSQLite();
         await processor.processDirectory(directoryPath);
-        
+
     } catch (error) {
         console.error(`❌ Verzeichnis ${directoryPath} existiert nicht oder ist nicht zugänglich`);
         process.exit(1);

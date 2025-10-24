@@ -19,3 +19,7 @@ Node.js must be installed see https://learn.microsoft.com/en-us/windows/dev-envi
 
 https://sqlitebrowser.org/  is a great tool for viewing and analyzing the database                                          
 
+# Data Cleanup
+My first garmin watch had no skitouring activities. In my case these have been recorded as "other" activities. As part of the loading these will be converted to "backcountry_skiing".
+
+This processing can be switched off by passing -n or -nocleanup as command line parameter.
