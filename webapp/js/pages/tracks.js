@@ -1,6 +1,7 @@
 // Tracks Page Component
 const TracksPage = {
-    props: ['tracks', 'settings'],
+    //props: ['tracks', 'settings'],
+    props: ['tracks'],
     emits: ['update-tracks'],
     template: `
         <div class="page">

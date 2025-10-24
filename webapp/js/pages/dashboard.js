@@ -1,22 +1,44 @@
 // Dashboard Page Component
 const DashboardPage = {
-    props: ['tracks', 'settings'],
+    //props: ['tracks', 'settings'],
+    props: {
+        yearSummary: {
+            type: Array,
+            default: () => []
+        },
+        tracks: {
+            type: Array,
+            default: () => []
+        },
+        loading: {
+            type: Boolean,
+            default: false
+        },
+        error: {
+            type: String,
+            default: null
+        },
+        onRefresh: {
+            type: Function,
+            default: () => {}
+        }
+    },
     template: `
         <div class="page">
             <h1>Dashboard aktuelles Jahr</h1>
             
             <div class="dashboard-grid">
                 <div class="stat-card">
-                    <div class="stat-value">{{ total }}</div>
-                    <div class="stat-label">Gesamte Tracks</div>
+                    <div class="stat-value">{{ summaryStats.total }}</div>
+                    <div class="stat-label">Anzahl Tracks</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value">{{ totalDistance }} km</div>
+                    <div class="stat-value">{{ summaryStats.totalDistance }} km</div>
                     <div class="stat-label">Gesamtdistanz</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value">{{ totalElevation }} m</div>
-                    <div class="stat-label">Gesamthöhe</div>
+                    <div class="stat-value">{{ summaryStats.totalElevation }} m</div>
+                    <div class="stat-label">Gesamthöhenmeter</div>
                 </div>
             </div>
             
@@ -42,27 +64,20 @@ const DashboardPage = {
         let leafletMap = null;
         let gridApi = null;
 
+
+        console.log("Dashboard Year Summary",props.yearSummary);
         // Computed Properties
-        const totalTracks = computed(() => props.tracks.length);
-        
-        const totalDistance = computed(() => {
-            return props.tracks.reduce((sum, track) => sum + track.distance, 0).toFixed(1);
-        });
-        
-        const totalElevation = computed(() => {
-            return props.tracks.reduce((sum, track) => sum + (track.elevationGain || 0), 0);
-        });
-        
-        const averagePace = computed(() => {
-            if (props.tracks.length === 0) return '0:00';
-            const totalMinutes = props.tracks.reduce((sum, track) => {
-                const [hours, minutes] = track.duration.split(':').map(Number);
-                return sum + (hours * 60) + minutes;
-            }, 0);
-            const avgMinutes = totalMinutes / props.tracks.length;
-            return `${Math.floor(avgMinutes / 60)}:${Math.floor(avgMinutes % 60).toString().padStart(2, '0')}`;
+        const summaryStats = computed(() => {
+            return {
+                total: props.yearSummary.total,
+                totalDistance: props.yearSummary.totalDistance,
+                totalElevation: props.yearSummary.totalElevation
+            }
         });
 
+        const totalDistance = props.yearSummary.totalDistance;
+        //const totalElevation = props.yearSummary.totalElevation;
+        const totalElevation = 200;
         const recentTracks = computed(() => {
             return [...props.tracks]
                 .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
@@ -113,10 +128,7 @@ const DashboardPage = {
         return {
             map,
             grid,
-            totalTracks,
-            totalDistance,
-            totalElevation,
-            averagePace,
+            summaryStats,
             recentTracks
         };
     }

@@ -8,6 +8,7 @@ const App = {
         const tracks = ref([]);
         const loading = ref(false);
         const error = ref(null);
+        const yearSummary = ref({});
 
         // Pages Definition
         const pages = [
@@ -22,35 +23,65 @@ const App = {
             return page ? page.component : 'DashboardPage';
         });
 
+         const currentPageProps = computed(() => {
+            console.log("In currentPageProps",yearSummary.value);
+
+
+            switch (currentPage.value) {
+                case 'dashboard':
+                    return { 
+                        yearSummary: yearSummary.value,
+                        loading: loading.value,
+                        error: error.value,
+                        onRefresh: loadInitialData // Funktion als Prop übergeben
+                    };
+                case 'tracks':
+                    return { 
+                        tracks: tracks.value,
+                        loading: loading.value 
+                    };
+                default:
+                    return {};
+            }
+        });
         // Methods
         const navigateTo = (pageId) => {
             currentPage.value = pageId;
             error.value = null;
         };
 
-        const handleUpdateTracks = (updatedTracks) => {
-            tracks.value = updatedTracks;
-        };
+        /**----------------------
+         * Data loading
+         * -----------------------
+         */
 
-        const handleUpdateSettings = (updatedSettings) => {
-            settings.value = updatedSettings;
+         const loadYearSummary = async () => {
+            try {
+                console.log("Lade Year Summary...");
+                const data = await ApiService.getYearSummary();
+                yearSummary.value = data;
+                console.log("loadYearSummary Summary data:", data);
+            } catch (err) {
+                console.error('Fehler beim Laden der Year Summary:', err);
+                error.value = 'Fehler beim Laden der Daten';
+                throw err; // Weiterwerfen für Promise.all
+            }
         };
 
         const loadInitialData = async () => {
             loading.value = true;
             try {
-                // Parallel alle Daten laden
-                const [tracksData, dummy] = await Promise.all([
-                    ApiService.getYearSummary(),
-                    ApiService.dummy()
+               // Parallele API Calls
+                await Promise.all([
+                    loadYearSummary(),
                 ]);
-                
-                tracks.value = tracksData;
+
             } catch (err) {
                 console.error('Failed to load initial data:', err);
             } finally {
                 loading.value = false;
             }
+            
         };
 
         // Lifecycle
@@ -62,17 +93,15 @@ const App = {
             // State
             currentPage,
             tracks,
+            yearSummary,
             loading,
             error,
-            pages,
-            
+            pages,          
             // Computed
             currentPageComponent,
-            
+             currentPageProps, 
             // Methods
             navigateTo,
-            handleUpdateTracks,
-            handleUpdateSettings
         };
     },
 
