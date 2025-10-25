@@ -19,7 +19,7 @@ class Api {
 
     async getLastTracks(req, res) {
         try {
-            var sql = "SELECT  activityName,  activityType,cast( ROUND(distance/1000) as int) AS distance, elevationGain, duration, startLatitude, startLongitude,filename from activities order by startTime DESC LIMIT 10";
+            var sql = "SELECT  activityName,  activityType,cast( ROUND(distance/1000) as int) AS distance, elevationGain, duration, startLatitude, startLongitude,filename from activities order by startTime DESC LIMIT 20";
             var activities = await db.query(sql);
             res.json(activities);
         } catch (error) {

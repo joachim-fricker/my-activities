@@ -43,14 +43,12 @@ const DashboardPage = {
                 </div>
             </div>
             
-            <h2>Aktivitätsübersicht</h2>
+            <h2>Letzte Aktivitäten</h2>
             <div class="map-grid-container">
                 <div class="map-container">
-                    <h3>Letzte Aktivitäten</h3>
                     <div ref="map" class="map"></div>
                 </div>
                 <div class="grid-container">
-                    <h3>Kürzliche Tracks</h3>
                     <div ref="grid" class="ag-theme-alpine"></div>
                 </div>
             </div>
@@ -107,11 +105,33 @@ const DashboardPage = {
                     { field: 'elevationGain', headerName: 'Elevation', flex: 1 },
                     { field: 'duration', headerName: 'Duration', flex: 1 }
                 ],
-                rowData: lastTracksValue.value
+                rowData: lastTracksValue.value,
+                onRowClicked: (event) => {
+                    leafletMap.setView([event.data.startLatitude, event.data.startLongitude], 13);
+                    let filename = event.data.filename;
+                    let newFilename = filename.replace('_summary.json', '.gpx');
+                    var gpxTrack = new  L.GPX ('./activities/' + newFilename, {
+                        async: true,
+                        marker_options: {
+                            startIconUrl: null,  // Start-Marker ausschalten
+                            endIconUrl: null,    // End-Marker ausschalten
+                            shadowUrl: null,     // Shadow ausschalten
+                            wptIconUrls: null    // Wegpunkte ausschalten
+                        }
+                    }).on('loaded', function (e) {
+                        leafletMap.fitBounds(e.target.getBounds()); // Karte an Track anpassen
+                    }).addTo(leafletMap);
+                },
             });
-            console.log("initGrid gridApi is", gridApi);
-            console.log("initGrid", lastTracksValue.value);
+            gridApi.setGridOptiononRowClicked = myRowClickedHandler;
         };
+
+        // create handler function
+        function myRowClickedHandler(event) {
+            console.log('The row was clicked', event);
+        }
+
+        // option 1: use the gridOptions
 
         // Lifecycle
         onMounted(() => {

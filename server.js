@@ -25,7 +25,8 @@ let tracks = [
 
 
 
-app.use('/', express.static('./webapp', { index: "index.html" }));
+app.use('/', express.static('./webapp',  { index: "index.html" }));
+app.use('/activities', express.static('./activities'));
 
 
 // our routes
