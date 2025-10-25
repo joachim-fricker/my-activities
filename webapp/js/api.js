@@ -30,9 +30,9 @@ const ApiService = {
         return this.request('/yearSummary');
     },
 
-    // TODO REMOVE
-    async dummy() {
-        return "dummy";
+    // year summary
+    async getLastTracks() {
+        return this.request('/lastTracks');
     },
 
     async getTrack(id) {

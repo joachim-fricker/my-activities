@@ -37,6 +37,10 @@ app.get('/api/yearSummary', (req, res) => {
     api.getYearSummary(req,res);
 });
 
+app.get('/api/lastTracks', (req, res) => {
+    api.getLastTracks(req,res);
+});
+
 app.post('/api/tracks', (req, res) => {
     const newTrack = {
         id: Date.now(),

@@ -9,12 +9,13 @@ const App = {
         const loading = ref(false);
         const error = ref(null);
         const yearSummary = ref({});
+        const lastTracks = ref([]);
 
         // Pages Definition
         const pages = [
             { id: 'dashboard', name: 'Dashboard', component: 'DashboardPage' },
             { id: 'tracks', name: 'Tracks', component: 'TracksPage' },
-            
+
         ];
 
         // Computed
@@ -23,22 +24,23 @@ const App = {
             return page ? page.component : 'DashboardPage';
         });
 
-         const currentPageProps = computed(() => {
-            console.log("In currentPageProps",yearSummary.value);
+        const currentPageProps = computed(() => {
+            console.log("In currentPageProps", yearSummary.value);
 
 
             switch (currentPage.value) {
                 case 'dashboard':
-                    return { 
+                    return {
                         yearSummary: yearSummary.value,
+                        lastTracks: lastTracks.value,
                         loading: loading.value,
                         error: error.value,
                         onRefresh: loadInitialData // Funktion als Prop übergeben
                     };
                 case 'tracks':
-                    return { 
+                    return {
                         tracks: tracks.value,
-                        loading: loading.value 
+                        loading: loading.value
                     };
                 default:
                     return {};
@@ -55,25 +57,38 @@ const App = {
          * -----------------------
          */
 
-         const loadYearSummary = async () => {
+        const loadYearSummary = async () => {
             try {
-                console.log("Lade Year Summary...");
+                console.log("Loading Year Summary...");
                 const data = await ApiService.getYearSummary();
                 yearSummary.value = data;
-                console.log("loadYearSummary Summary data:", data);
             } catch (err) {
-                console.error('Fehler beim Laden der Year Summary:', err);
-                error.value = 'Fehler beim Laden der Daten';
-                throw err; // Weiterwerfen für Promise.all
+                console.error('Error Loading YearSummary:', err);
+                error.value = 'Error Loading Year Summary';
+                throw err;
             }
         };
+
+        const loadLastTracks = async () => {
+            try {
+                console.log("Loading LastTracks...");
+                const data = await ApiService.getLastTracks();
+                lastTracks.value = data;
+            } catch (err) {
+                console.error('Error Loading LastTracks:', err);
+                error.value = 'Error Loading LastTracks';
+                throw err;
+            }
+        };
+
 
         const loadInitialData = async () => {
             loading.value = true;
             try {
-               // Parallele API Calls
+                // Parallele API Calls
                 await Promise.all([
                     loadYearSummary(),
+                    loadLastTracks()
                 ]);
 
             } catch (err) {
@@ -81,7 +96,7 @@ const App = {
             } finally {
                 loading.value = false;
             }
-            
+
         };
 
         // Lifecycle
@@ -94,12 +109,13 @@ const App = {
             currentPage,
             tracks,
             yearSummary,
+            lastTracks,
             loading,
             error,
-            pages,          
+            pages,
             // Computed
             currentPageComponent,
-             currentPageProps, 
+            currentPageProps,
             // Methods
             navigateTo,
         };

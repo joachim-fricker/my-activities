@@ -1,12 +1,13 @@
+
 // Dashboard Page Component
 const DashboardPage = {
     //props: ['tracks', 'settings'],
     props: {
         yearSummary: {
-            type: Array,
+            type: Object,
             default: () => []
         },
-        tracks: {
+        lastTracks: {
             type: Array,
             default: () => []
         },
@@ -20,7 +21,7 @@ const DashboardPage = {
         },
         onRefresh: {
             type: Function,
-            default: () => {}
+            default: () => { }
         }
     },
     template: `
@@ -58,14 +59,14 @@ const DashboardPage = {
 
     setup(props) {
         const { computed, ref, onMounted, watch } = Vue;
-        
+
         const map = ref(null);
         const grid = ref(null);
         let leafletMap = null;
         let gridApi = null;
 
 
-        console.log("Dashboard Year Summary",props.yearSummary);
+        console.log("Dashboard Year Summary", props.yearSummary);
         // Computed Properties
         const summaryStats = computed(() => {
             return {
@@ -75,41 +76,41 @@ const DashboardPage = {
             }
         });
 
-        const totalDistance = props.yearSummary.totalDistance;
-        //const totalElevation = props.yearSummary.totalElevation;
-        const totalElevation = 200;
-        const recentTracks = computed(() => {
-            return [...props.tracks]
-                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-                .slice(0, 5);
+        const lastTracksValue = computed(() => {
+            return props.lastTracks;
         });
 
         // Methods
         const initMap = () => {
             if (!map.value) return;
-            
+
             leafletMap = L.map(map.value).setView([47.5746760703623, 8.51740451529622], 13);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(leafletMap);
-            
-            // Zeige letzte Tracks auf der Map
+
+            /*
             recentTracks.value.forEach(track => {
                 // Hier würdest du die echten Track-Points verwenden
                 const marker = L.marker([47.3769, 8.5417]).addTo(leafletMap);
                 marker.bindPopup(`<b>${track.name}</b><br>${track.distance}km`);
             });
+            */
         };
 
         const initGrid = () => {
             if (!grid.value) return;
-            
-            gridApi = new agGrid.Grid(grid.value, {
+
+            gridApi = agGrid.createGrid(grid.value, {
                 columnDefs: [
-                    { field: 'name', headerName: 'Name', flex: 2 },
-                    { field: 'distance', headerName: 'Distanz', flex: 1 },
-                    { field: 'duration', headerName: 'Dauer', flex: 1 }
+                    { field: 'activityName', headerName: 'Name', flex: 2 },
+                    { field: 'activityType', headerName: 'Type', flex: 2 },
+                    { field: 'distance', headerName: 'Distance', flex: 1 },
+                    { field: 'elevationGain', headerName: 'Elevation', flex: 1 },
+                    { field: 'duration', headerName: 'Duration', flex: 1 }
                 ],
-                rowData: recentTracks.value
+                rowData: lastTracksValue.value
             });
+            console.log("initGrid gridApi is", gridApi);
+            console.log("initGrid", lastTracksValue.value);
         };
 
         // Lifecycle
@@ -119,9 +120,11 @@ const DashboardPage = {
         });
 
         // Watch for tracks changes
-        watch(() => props.tracks, () => {
+        watch(() => props.lastTracks, () => {
+
             if (gridApi) {
-                //gridApi.setRowData(recentTracks.value);
+
+                gridApi.setGridOption('rowData', lastTracksValue.value);
             }
         });
 
@@ -129,7 +132,7 @@ const DashboardPage = {
             map,
             grid,
             summaryStats,
-            recentTracks
+            lastTracksValue
         };
     }
 };

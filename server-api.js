@@ -13,10 +13,21 @@ class Api {
             var activities = await db.get(sql);
             res.json(activities);
         } catch (error) {
-            console.log("Got an eror fetching the year summary",error);
+            console.log("Got an eror fetching the year summary", error);
         }
     }
 
+    async getLastTracks(req, res) {
+        try {
+            var sql = "SELECT  activityName,  activityType,cast( ROUND(distance/1000) as int) AS distance, elevationGain, duration, startLatitude, startLongitude,filename from activities order by startTime DESC LIMIT 10";
+            var activities = await db.query(sql);
+            res.json(activities);
+        } catch (error) {
+            console.log("Got an eror fetching the last activities", error);
+        }
+
+
+    }
 
 }
 export const api = new Api();
