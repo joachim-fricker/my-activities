@@ -44,6 +44,7 @@ const DashboardPage = {
             </div>
             
             <h2>Letzte Aktivitäten</h2>
+            {{ selectedActivity.activityName}} {{ selectedActivity.startTime}}
             <div class="map-grid-container">
                 <div class="map-container">
                     <div ref="map" class="map"></div>
@@ -62,7 +63,10 @@ const DashboardPage = {
         const grid = ref(null);
         let leafletMap = null;
         let gridApi = null;
-
+        const selectedActivity = ref({
+            activityName: "Please select",
+            startTime: ""
+        });
 
         console.log("Dashboard Year Summary", props.yearSummary);
         // Computed Properties
@@ -73,6 +77,8 @@ const DashboardPage = {
                 totalElevation: props.yearSummary.totalElevation
             }
         });
+
+
 
         const lastTracksValue = computed(() => {
             return props.lastTracks;
@@ -106,11 +112,19 @@ const DashboardPage = {
                     { field: 'duration', headerName: 'Duration', flex: 1 }
                 ],
                 rowData: lastTracksValue.value,
+
                 onRowClicked: (event) => {
+                    leafletMap.eachLayer(function (layer) {
+                        if (layer instanceof L.GPX) {
+                            leafletMap.removeLayer(layer);
+                        }
+                    });
                     leafletMap.setView([event.data.startLatitude, event.data.startLongitude], 13);
                     let filename = event.data.filename;
                     let newFilename = filename.replace('_summary.json', '.gpx');
-                    var gpxTrack = new  L.GPX ('./activities/' + newFilename, {
+                    selectedActivity.value.activityName = event.data.activityName;
+                    selectedActivity.value.startTime = event.data.startTime;
+                    var gpxTrack = new L.GPX('./activities/' + newFilename, {
                         async: true,
                         marker_options: {
                             startIconUrl: null,  // Start-Marker ausschalten
@@ -123,15 +137,13 @@ const DashboardPage = {
                     }).addTo(leafletMap);
                 },
             });
-            gridApi.setGridOptiononRowClicked = myRowClickedHandler;
+            
         };
 
         // create handler function
         function myRowClickedHandler(event) {
             console.log('The row was clicked', event);
         }
-
-        // option 1: use the gridOptions
 
         // Lifecycle
         onMounted(() => {
@@ -143,7 +155,6 @@ const DashboardPage = {
         watch(() => props.lastTracks, () => {
 
             if (gridApi) {
-
                 gridApi.setGridOption('rowData', lastTracksValue.value);
             }
         });
@@ -152,6 +163,7 @@ const DashboardPage = {
             map,
             grid,
             summaryStats,
+            selectedActivity,
             lastTracksValue
         };
     }
