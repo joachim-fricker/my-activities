@@ -101,11 +101,19 @@ body {
     margin-top: 0.5rem;
 }
 
+.my-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    height: 80vh;
+    background: blue;
+}
+
 .map-grid-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
-    height: 60vh;
+    height: 80vh;
 }
 
 .map-container, .grid-container {

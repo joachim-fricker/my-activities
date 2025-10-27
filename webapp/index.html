@@ -32,11 +32,7 @@
 
         <!-- Main Content -->
         <main class="main-content">
-            <!-- Dynamic Page Content 
-            <component :is="currentPageComponent" :tracks="tracks" :settings="settings"
-                @update-tracks="handleUpdateTracks" @update-settings="handleUpdateSettings"></component>
-                -->
-                <component :is="currentPageComponent"  :is="currentPageComponent" v-bind="currentPageProps" :tracks="tracks" :settings="settings"></component>
+                <component :is="currentPageComponent"  :is="currentPageComponent" v-bind="currentPageProps" ></component>
             
         </main>
 

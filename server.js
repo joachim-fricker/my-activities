@@ -38,8 +38,12 @@ app.get('/api/yearSummary', (req, res) => {
     api.getYearSummary(req,res);
 });
 
-app.get('/api/lastTracks', (req, res) => {
-    api.getLastTracks(req,res);
+app.get('/api/allTracks', (req, res) => {
+    api.getAllTracks(req,res);
+});
+
+app.get('/api/summary', (req, res) => {
+    api.getSummary(req,res);
 });
 
 app.post('/api/tracks', (req, res) => {

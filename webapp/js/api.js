@@ -1,5 +1,6 @@
-// API Service für Backend-Kommunikation
-const API_BASE_URL = 'http://localhost:3000/api'; // Ändere zu deinem Backend
+// API Service für Backend-Kommunikation 
+
+const API_BASE_URL = 'http://localhost:3000/api';
 
 const ApiService = {
     async request(endpoint, options = {}) {
@@ -25,15 +26,19 @@ const ApiService = {
         }
     },
 
-    // year summary
+
     async getYearSummary() {
         return this.request('/yearSummary');
     },
 
-    // year summary
-    async getLastTracks() {
-        return this.request('/lastTracks');
+    async getSummary() {
+        return this.request('/summary');
     },
+
+    async getAllTracks() {
+        return this.request('/allTracks');
+    },
+
 
     async getTrack(id) {
         return this.request(`/tracks/${id}`);

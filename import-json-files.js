@@ -71,7 +71,7 @@ class JsonToSQLite {
                 path.extname(file).toLowerCase() === '.json'
             );
 
-            console.log(`📁 ${jsonFiles.length} JSON-files found in ${directory}`);
+            // console.log(`📁 ${jsonFiles.length} JSON-files found in ${directory}`);
             return jsonFiles.map(file => path.join(directory, file));
         } catch (error) {
             console.error('❌ Error reading directory', error);
@@ -100,7 +100,7 @@ class JsonToSQLite {
     cleanupRecords(jsonData) {
         if (!jsonData) return;
         if (jsonData.activityTypeDTO && jsonData.activityTypeDTO.typeKey == 'other') {
-            console.log("Converting other to backcountry_skiing");
+            // console.log("Converting other to backcountry_skiing");
             jsonData.activityTypeDTO.typeKey = 'backcountry_skiing';
         }
     }
@@ -192,7 +192,7 @@ class JsonToSQLite {
                                         console.error(`❌ Error inserting ${filename}:`, err.message);
                                         errorCount++;
                                     } else {
-                                        console.log(`📝 ${filename} inserted (ID: ${this.lastID})`);
+                                        // console.log(`📝 ${filename} inserted (ID: ${this.lastID})`);
                                         successCount++;
                                     }
                                     // next row

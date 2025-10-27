@@ -5,11 +5,12 @@ const App = {
     setup() {
         // State
         const currentPage = ref('dashboard');
-        const tracks = ref([]);
+
         const loading = ref(false);
         const error = ref(null);
         const yearSummary = ref({});
-        const lastTracks = ref([]);
+        const allTracks = ref([]);
+        const summary = ref([]);
 
         // Pages Definition
         const pages = [
@@ -25,22 +26,23 @@ const App = {
         });
 
         const currentPageProps = computed(() => {
-            console.log("In currentPageProps", yearSummary.value);
-
 
             switch (currentPage.value) {
                 case 'dashboard':
                     return {
                         yearSummary: yearSummary.value,
-                        lastTracks: lastTracks.value,
+                        summary: summary.value,
                         loading: loading.value,
                         error: error.value,
                         onRefresh: loadInitialData // Funktion als Prop übergeben
                     };
                 case 'tracks':
                     return {
-                        tracks: tracks.value,
-                        loading: loading.value
+                        allTracks: allTracks.value,
+                        loading: loading.value,
+                        error: error.value,
+                        onRefresh: loadInitialData // Funktion als Prop übergeben
+
                     };
                 default:
                     return {};
@@ -64,19 +66,28 @@ const App = {
                 yearSummary.value = data;
             } catch (err) {
                 console.error('Error Loading YearSummary:', err);
-                error.value = 'Error Loading Year Summary';
                 throw err;
             }
         };
 
-        const loadLastTracks = async () => {
+        const loadSummary = async () => {
             try {
-                console.log("Loading LastTracks...");
-                const data = await ApiService.getLastTracks();
-                lastTracks.value = data;
+                console.log("Loading Summary...");
+                const data = await ApiService.getSummary();
+                summary.value = data;
             } catch (err) {
-                console.error('Error Loading LastTracks:', err);
-                error.value = 'Error Loading LastTracks';
+                console.error('Error Loading YearSummary:', err);
+                throw err;
+            }
+        };
+
+        const loadAllTracks = async () => {
+            try {
+                console.log("Loading AllTracks...");
+                const data = await ApiService.getAllTracks();
+                allTracks.value = data;
+            } catch (err) {
+                console.error('Error Loading AllTracks:', err);
                 throw err;
             }
         };
@@ -88,7 +99,8 @@ const App = {
                 // Parallele API Calls
                 await Promise.all([
                     loadYearSummary(),
-                    loadLastTracks()
+                    loadAllTracks(),
+                    loadSummary()
                 ]);
 
             } catch (err) {
@@ -107,9 +119,6 @@ const App = {
         return {
             // State
             currentPage,
-            tracks,
-            yearSummary,
-            lastTracks,
             loading,
             error,
             pages,

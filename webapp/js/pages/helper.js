@@ -16,8 +16,17 @@ const useHelpers = () => {
         return new Date(dateString).toLocaleDateString('de-DE');
     };
     
+    const formatNumber = (number) => {
+        if (!number && number !== 0) return '0.00';
+        return new Intl.NumberFormat('de-CH', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(number);
+    };
+
     return {
         formatTime,
+        formatNumber,
         formatDate
     };
 };
