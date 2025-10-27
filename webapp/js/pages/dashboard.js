@@ -59,6 +59,7 @@ const DashboardPage = {
     setup(props) {
         const { computed, ref, onMounted, watch } = Vue;
 
+        const { formatTime } = useHelpers();
         const map = ref(null);
         const grid = ref(null);
         let leafletMap = null;
@@ -109,7 +110,12 @@ const DashboardPage = {
                     { field: 'activityType', headerName: 'Type', flex: 2 },
                     { field: 'distance', headerName: 'Distance', flex: 1 },
                     { field: 'elevationGain', headerName: 'Elevation', flex: 1 },
-                    { field: 'duration', headerName: 'Duration', flex: 1 }
+                    {
+                        field: 'duration',
+                        headerName: 'Duration',
+                        flex: 1,
+                        valueFormatter: (params) => formatTime(params.value)
+                    }
                 ],
                 rowData: lastTracksValue.value,
 
@@ -137,7 +143,7 @@ const DashboardPage = {
                     }).addTo(leafletMap);
                 },
             });
-            
+
         };
 
         // create handler function

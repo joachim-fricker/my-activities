@@ -13,7 +13,7 @@ Node.js must be installed see https://learn.microsoft.com/en-us/windows/dev-envi
 
 # Loading the data into the database
 
- ``node .\import-json-files.j``
+ ``node ./import-json-files.js``
 
  This will create the data.db in the current folder
 
