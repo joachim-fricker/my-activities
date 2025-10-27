@@ -116,6 +116,8 @@ const App = {
             loadInitialData();
         });
 
+        // AG Charts Vue Plugin registrieren
+
         return {
             // State
             currentPage,
@@ -131,11 +133,12 @@ const App = {
     },
 
     components: {
+        'chart-component': ChartComponent,
         DashboardPage,
-        TracksPage,
-
+        TracksPage
     }
 };
 
 // App erstellen
-createApp(App).mount('#app');
+const app = createApp(App);
+app.mount('#app');
