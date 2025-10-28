@@ -12,6 +12,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "ag-charts-vue3": "^12.3.0",
     "ag-grid-community": "^34.3.0",
     "ag-grid-vue3": "^34.3.0",
     "vue": "^3.5.22",

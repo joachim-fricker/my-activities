@@ -8,7 +8,7 @@
                 <div ref="map" class="map"></div>
             </div>
             <div class="grid-container">
-                <ag-grid-vue class="ag-theme-alpine" style="width: 100%; height: 100%" :rowData="rowData"
+                <ag-grid-vue class="ag-theme-alpine" style="width: 100%; height: 100%" :rowData="rowData" :theme="myTheme"
                     :columnDefs="columnDefs" :defaultColDef="defaultColDef" v-on:row-clicked="onRowClicked"/>
 
             </div>
@@ -23,9 +23,7 @@ import { ApiService } from '../composables/api';
 import { useHelpers } from '../composables/helper';
 import { toast } from 'vue3-toastify'
 import { AgGridVue } from 'ag-grid-vue3'
-import 'ag-grid-community/styles/ag-grid.css'
-import 'ag-grid-community/styles/ag-theme-alpine.css'
-
+import { themeQuartz } from 'ag-grid-community';
 
 export default {
     name: 'AllTracks',
@@ -47,6 +45,8 @@ export default {
         });
 
         let leafletMap = null;
+
+        const myTheme = themeQuartz.withParams({ accentColor: 'blue' });
         const columnDefs = [
             { field: 'activityName', headerName: 'Name', flex: 2 },
             { field: 'activityType', headerName: 'Type', flex: 1, },
@@ -118,6 +118,7 @@ export default {
         })
 
         return {
+            myTheme,
             map,
             onRowClicked,
             columnDefs,
@@ -134,14 +135,3 @@ export default {
 }
 </script>
 
-<style scoped>
-.grid-page {
-    width: 100%;
-    max-width: 1000px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-</style>

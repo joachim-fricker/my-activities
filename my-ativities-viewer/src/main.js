@@ -5,6 +5,7 @@ import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
 import "./assets/main.css";
 import Vue3Toastify from 'vue3-toastify'
 import 'vue3-toastify/dist/index.css'
+
 // Register all Community features
 ModuleRegistry.registerModules([AllCommunityModule])
 

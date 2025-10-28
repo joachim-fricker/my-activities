@@ -33,10 +33,20 @@ class Api {
     strftime('%Y', startTime) as year,
     COUNT(*) as totalActivities,
     -- Cycling Aktivitäten
-    SUM(CASE WHEN activityType IN ('cycling', 'road_biking', 'virtual_ride') THEN 1 ELSE 0 END) as totalCycling,
-    SUM(CASE WHEN activityType IN ('cycling', 'road_biking', 'virtual_ride') THEN distance ELSE 0 END)/1000 as totalCyclingDistance,
-    SUM(CASE WHEN activityType IN ('cycling', 'road_biking', 'virtual_ride') THEN elevationGain ELSE 0 END)/1000 as totalCyclingElevation,
-    
+    SUM(CASE WHEN activityType = 'cycling' THEN 1 ELSE 0 END) as totalCycling,
+    SUM(CASE WHEN activityType = 'cycling' THEN distance ELSE 0 END)/1000 as totalCyclingDistance,
+    SUM(CASE WHEN activityType = 'cycling' THEN elevationGain ELSE 0 END)/1000 as totalCyclingElevation,
+
+    -- road_bike
+    SUM(CASE WHEN activityType = 'road_biking' THEN 1 ELSE 0 END) as totalRoadCycling,
+    SUM(CASE WHEN activityType = 'road_biking' THEN distance ELSE 0 END)/1000 as totalRoadCyclingDistance,
+    SUM(CASE WHEN activityType = 'road_biking' THEN elevationGain ELSE 0 END)/1000 as totalRoadCyclingElevation,
+
+    -- virtual_ride
+    SUM(CASE WHEN activityType = 'virtual_ride' THEN 1 ELSE 0 END) as totalVirtuallRide,
+    SUM(CASE WHEN activityType = 'virtual_ride' THEN distance ELSE 0 END)/1000 as totalVirtualRideDistance,
+    SUM(CASE WHEN activityType = 'virtual_ride' THEN elevationGain ELSE 0 END)/1000 as totalVirtaulRideElevation,
+
     -- Mountain Biking
     SUM(CASE WHEN activityType = 'mountain_biking' THEN 1 ELSE 0 END) as totalMountainBiking,
     SUM(CASE WHEN activityType = 'mountain_biking' THEN distance ELSE 0 END)/1000 as totalMountainBikingDistance,
@@ -51,20 +61,23 @@ class Api {
     SUM(CASE WHEN activityType = 'backcountry_skiing' THEN 1 ELSE 0 END) as totalBackcountrySkiing,
     SUM(CASE WHEN activityType = 'backcountry_skiing' THEN distance ELSE 0 END)/1000 as totalBackcountrySkiingDistance,
     SUM(CASE WHEN activityType = 'backcountry_skiing' THEN elevationGain ELSE 0 END)/1000 as totalBackcountrySkiingElevation,
-    
+
+    -- Backcountry Skiing
+    SUM(CASE WHEN activityType = 'resort_skiing' THEN 1 ELSE 0 END) as totalResortSkiing,
+    SUM(CASE WHEN activityType = 'resort_skiing' THEN distance ELSE 0 END)/1000 as totalResortSkiingDistance,
+    SUM(CASE WHEN activityType = 'resort_skiing' THEN elevationGain ELSE 0 END)/1000 as totalResortSkiingElevation,
+
+    -- all walking/runnuing/
+    SUM(CASE WHEN activityType IN ('walking','running','mountaineering','hiking') THEN 1 ELSE 0 END) as totaWalking,
+    SUM(CASE WHEN activityType IN ('walking','running','mountaineering','hiking') THEN distance ELSE 0 END)/1000 as totalWalkingDistance,
+    SUM(CASE WHEN activityType IN ('walking','running','mountaineering','hiking') THEN elevationGain ELSE 0 END)/1000 as totalWalkingElevation,
+
+
     -- Gesamtsummen
     SUM(distance)/1000 as totalDistance,
     SUM(elevationGain)/1000 as totalElevation
 
 FROM activities 
-WHERE activityType IN (
-    'mountain_biking',
-    'cycling', 
-    'road_biking',
-    'gravel_cycling',
-    'virtual_ride',
-    'backcountry_skiing'
-)
 GROUP BY year
 ORDER BY year;
 `
