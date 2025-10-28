@@ -1,4 +1,4 @@
-const useHelpers = () => {
+export const useHelpers = () => {
     const formatTime = (sekunden) => {
         if (!sekunden && sekunden !== 0) return '0:00:00';
         
@@ -30,3 +30,4 @@ const useHelpers = () => {
         formatDate
     };
 };
+
