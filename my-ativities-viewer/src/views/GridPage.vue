@@ -28,13 +28,22 @@ export default {
       data: testData,
       // Series: Defines which chart type and data to use
       series: [
-        { type: 'bar', xKey: 'year', yKey: 'totalDistance', stackGroup: 'Total', yName: 'Total'},
-        { type: 'bar', xKey: 'year', yKey: 'totalMountainBikingDistance', stackGroup: 'Other', yName: 'MTB'},
-        { type: 'bar', xKey: 'year', yKey: 'totalGravelCyclingDistance', stackGroup: 'Other', yName: 'Gravel'},
-        { type: 'bar', xKey: 'year', yKey: 'totalRoadCyclingDistance', stackGroup: 'Other' ,yName: 'Road'},
-        { type: 'bar', xKey: 'year', yKey: 'totalBackcountrySkiingDistance', stackGroup: 'Other' ,yName: 'SkiTour'},
-        { type: 'bar', xKey: 'year', yKey: 'totalWalkingDistance', stackGroup: 'Other' ,yName: 'Wandern'},
-      ]
+        { type: 'bar', xKey: 'year', yKey: 'totalDistance', yName: 'Total'},
+        { type: 'bar', xKey: 'year', yKey: 'totalMountainBikingDistance', yName: 'MTB'},
+        { type: 'bar', xKey: 'year', yKey: 'totalGravelCyclingDistance',  yName: 'Gravel'},
+        { type: 'bar', xKey: 'year', yKey: 'totalRoadCyclingDistance', yName: 'Road'},
+        { type: 'bar', xKey: 'year', yKey: 'totalBackcountrySkiingDistance',yName: 'SkiTour'},
+        { type: 'bar', xKey: 'year', yKey: 'totalWalkingDistance' ,yName: 'Wandern'},
+      ],
+       axes: [
+        {
+          type: "grouped-category",
+          position: "bottom",
+          label: { rotation: 0 },
+          depthOptions: [{}, { label: { fontWeight: "bold" } }],
+        },
+        { type: "number", position: "left" },
+      ],
     }
 
     return {

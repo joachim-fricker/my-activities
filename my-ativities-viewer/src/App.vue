@@ -36,7 +36,7 @@ main {
    
 }
 header {
-  background-color: #d3f7f8;;
+ background-color: rgb(247, 247, 239);
   padding: 1rem 2rem;
   display: flex;
   align-items: center;

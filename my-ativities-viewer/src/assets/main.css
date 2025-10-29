@@ -28,4 +28,12 @@
     border-radius: 4px;
 }
 
+#app div:has(> .ag-charts-wrapper) {
+    padding: 1rem;
+    height: 400px;
+    border-radius: 8px; 
+    border: 2px solid black;
+    overflow: hidden;
+    transform: translate3d(0, 0, 0);
+}
 

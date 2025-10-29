@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Dashboard aktuelles Jahr</h1>
+    <h2>Atuelles Jahr</h2>
     <div class="dashboard">
       <div class="stat-card">
         <div class="stat-value">{{ yearSummary.total }}</div>
@@ -15,40 +15,104 @@
         <div class="stat-label">Gesamthöhenmeter</div>
       </div>
     </div>
-    <h1>Letzte Jahre</h1>
+    <h2>Daten aller Jahre in km</h2> 
+    <ag-charts :options="distanceData" > </ag-charts>
+    <ag-charts :options="elevationData" > </ag-charts>
   </div>
 
 </template>
 
 <script>
 
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch, computed } from 'vue';
 import { ApiService } from '../composables/api';
 import { useHelpers } from '../composables/helper';
 import { toast } from 'vue3-toastify'
+import { AgCharts } from 'ag-charts-vue3';
 
 
 export default {
+  name: 'GridPage',
+  components: {
+    'ag-charts': AgCharts,
+  },
 
   setup() {
     const yearSummary = ref({});
+    const summary = ref([]);
     const loading = ref(true);
     const error = ref(null);
     const { formatTime, formatNumber } = useHelpers()
 
+    const distanceData = computed(() => ({
+      title: {
+        text: "Distanzen der Aktivitäten"
+      },
+      data: summary.value, 
+      //data: summary.value,
+      // Series: Defines which chart type and data to use
+      series: [
+        { type: 'bar', xKey: 'year', yKey: 'totalDistance', yName: 'Total' },
+        { type: 'bar', xKey: 'year', yKey: 'totalMountainBikingDistance', yName: 'MTB' },
+        { type: 'bar', xKey: 'year', yKey: 'totalGravelCyclingDistance', yName: 'Gravel' },
+        { type: 'bar', xKey: 'year', yKey: 'totalRoadCyclingDistance', yName: 'Road' },
+        { type: 'bar', xKey: 'year', yKey: 'totalBackcountrySkiingDistance', yName: 'SkiTour' },
+        { type: 'bar', xKey: 'year', yKey: 'totalWalkingDistance', yName: 'Wandern' },
+      ],
+      axes: [
+        {
+          type: "grouped-category",
+          position: "bottom",
+          label: { rotation: 0 },
+          depthOptions: [{}, { label: { fontWeight: "bold" } }],
+        },
+        { type: "number", position: "left" },
+      ]
+    }));
+
+     const elevationData = computed(() => ({
+      title: {
+        text: "Höhenmeter der Aktivitäten"
+      },
+      data: summary.value, 
+      //data: summary.value,
+      // Series: Defines which chart type and data to use
+      series: [
+        { type: 'bar', xKey: 'year', yKey: 'totalElevation', yName: 'Total' },
+        { type: 'bar', xKey: 'year', yKey: 'totalMountainBikingElevation', yName: 'MTB' },
+        { type: 'bar', xKey: 'year', yKey: 'totalGravelCyclingElevation', yName: 'Gravel' },
+        { type: 'bar', xKey: 'year', yKey: 'totalRoadCyclingElevation', yName: 'Road' },
+        { type: 'bar', xKey: 'year', yKey: 'totalBackcountrySkiingElevation', yName: 'SkiTour' },
+        { type: 'bar', xKey: 'year', yKey: 'totalWalkingElevation', yName: 'Wandern' },
+      ],
+      axes: [
+        {
+          type: "grouped-category",
+          position: "bottom",
+          label: { rotation: 0 },
+          depthOptions: [{}, { label: { fontWeight: "bold" } }],
+        },
+        { type: "number", position: "left" },
+      ]
+    }));
     onMounted(async () => {
       try {
-        yearSummary.value = await ApiService.getYearSummary(toast)
+        yearSummary.value = await ApiService.getYearSummary(toast);
+        summary.value = await ApiService.getSummary(toast);
       } catch (err) {
       } finally {
         loading.value = false
       }
     })
 
+
     return {
       formatTime,
       formatNumber,
+      distanceData,
+      elevationData,
       yearSummary,
+      summary,
       loading,
       error
     }
@@ -92,7 +156,7 @@ export default {
 .stat-label {
   color: black;
   font-weight: bold;
-  font-size:24px;
-    margin-top: 0.5rem;
+  font-size: 24px;
+  margin-top: 0.5rem;
 }
 </style>
