@@ -8,8 +8,9 @@
                 <div ref="map" class="map"></div>
             </div>
             <div class="grid-container">
-                <ag-grid-vue class="ag-theme-alpine" style="width: 100%; height: 100%" :rowData="rowData" :theme="myTheme"
-                    :columnDefs="columnDefs" :defaultColDef="defaultColDef" v-on:row-clicked="onRowClicked"/>
+                <ag-grid-vue class="ag-theme-alpine" style="width: 100%; height: 100%" :rowData="rowData"
+                    :theme="myTheme" :columnDefs="columnDefs" :defaultColDef="defaultColDef"
+                    v-on:row-clicked="onRowClicked" />
 
             </div>
         </div>
@@ -18,7 +19,7 @@
 </template>
 
 <script>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { ApiService } from '../composables/api';
 import { useHelpers } from '../composables/helper';
 import { toast } from 'vue3-toastify'
@@ -96,12 +97,11 @@ export default {
             selectedActivity.value.startTime = event.data.startTime;
             var gpxTrack = new L.GPX('http://localhost:3000/activities/' + newFilename, {
                 async: true,
-                marker_options: {
-                    startIconUrl: null,  // Start-Marker ausschalten
-                    endIconUrl: null,    // End-Marker ausschalten
-                    shadowUrl: null,     // Shadow ausschalten
-                    wptIconUrls: null    // Wegpunkte ausschalten
+                markers: {
+                    startIcon: 'src/assets/pin-icon-start.png',
+                    endIcon: 'src/assets/pin-icon-end.png',
                 }
+
             }).on('loaded', function (e) {
                 leafletMap.fitBounds(e.target.getBounds()); // Karte an Track anpassen
             }).addTo(leafletMap);
@@ -116,6 +116,7 @@ export default {
                 loading.value = false
             }
         })
+
 
         return {
             myTheme,
@@ -134,4 +135,3 @@ export default {
 
 }
 </script>
-

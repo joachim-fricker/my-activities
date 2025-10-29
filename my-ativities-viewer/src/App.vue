@@ -5,6 +5,7 @@
       <nav>
         <router-link to="/">Startseite</router-link>
         <router-link to="/allTracks">Alle Aktivitäten</router-link>
+        <router-link to="/world">Weltkarte</router-link>
         <router-link to="/grid">GPX Tabelle</router-link>
       </nav>
     </header>
