@@ -31,17 +31,23 @@ export default {
             leafletMap = L.map(map.value).setView([47.5746760703623, 8.51740451529622], 4);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(leafletMap);
 
-            /*
-            recentTracks.value.forEach(track => {
-                // Hier würdest du die echten Track-Points verwenden
-                const marker = L.marker([47.3769, 8.5417]).addTo(leafletMap);
-                marker.bindPopup(`<b>${track.name}</b><br>${track.distance}km`);
-            });
-            */
         };
 
+        const onClick = (event) => {
+            let track = event.target.track ;
+            let filename = track.filename;
+            let newFilename = filename.replace('_summary.json', '.gpx');
+            var gpxTrack = new L.GPX('http://localhost:3000/activities/' + newFilename, {
+                async: true,
+                markers: {
+                    startIcon: 'src/assets/pin-icon-start.png',
+                    endIcon: 'src/assets/pin-icon-end.png',
+                }
 
+            }).addTo(leafletMap);
+        }
 
+        const { formatTime, formatNumber } = useHelpers();
         onMounted(async () => {
             initMap();
             try {
@@ -51,12 +57,15 @@ export default {
                         // Korrigierter Bedingung: Marker nur setzen, wenn Koordinaten vorhanden sind
                         if (track.startLatitude && track.startLongitude) {
                             const marker = L.marker([track.startLatitude, track.startLongitude]).addTo(leafletMap);
-                            
+                            let text =track.activityName + " " + track.startTime + " distance " + formatNumber(track.distance) + "km";
+                            marker.track = track;
+                            marker.bindPopup(text);
+                            marker.on('click', onClick);
                         } else {
                             //  console.log("Ignoring due to missing coordinates:", track.activityName);
                         }
                     } else {
-                       // console.log("Ignoring virtual_ride:", track.activityName);
+                        // console.log("Ignoring virtual_ride:", track.activityName);
                     }
                 });
             } catch (error) {
@@ -84,12 +93,12 @@ export default {
     */
 
 
-    return {
-        map,
-        rowData,
-        loading,
-        error
-    }
+        return {
+            map,
+            rowData,
+            loading,
+            error
+        }
     }
 }
 
