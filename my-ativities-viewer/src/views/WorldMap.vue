@@ -28,7 +28,7 @@ export default {
         const initMap = () => {
 
             if (!map.value) return;
-            leafletMap = L.map(map.value).setView([47.5746760703623, 8.51740451529622], 4);
+            leafletMap = L.map(map.value).setView([47.5746760703623, 30], 4);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(leafletMap);
 
         };
