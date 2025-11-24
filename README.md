@@ -24,27 +24,6 @@ My first garmin watch had no skitouring activities. In my case these have been r
 
 This processing can be switched off by passing -n or -nocleanup as command line parameter.
 
-# Starting 
-
-For the moment only the dev setup is supported and the backend and frontend has to be startet separatly
-
-## start the backend
-
-`` 
-cd  backend
-node server.js
-`` 
-
-## start the frontend
-
-`` 
-cd my-ativities-viewer
-npm run dev
-`` 
-## open UI
-
-`` http://localhost:5173 ``
-
 # Screenshot of the UI
 
 ## Yearly Summary
@@ -56,4 +35,24 @@ npm run dev
 ## World Map
 
 ![World Map ](https://github.com/joachim-fricker/my-activities/blob/master/uiScreenshot/WorldMap.png?raw=true)
+
+# Starting 
+
+For the moment only the dev setup is supported and the backend and frontend has to be startet separatly
+
+## start the backend
+
+`` 
+cd  backend; node server.js
+`` 
+
+## start the frontend
+
+`` 
+cd my-ativities-viewer;npm run dev
+`` 
+## open UI
+
+`` http://localhost:5173 ``
+
 
