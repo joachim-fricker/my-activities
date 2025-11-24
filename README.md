@@ -47,3 +47,13 @@ npm run dev
 
 # Screenshot of the UI
 
+## Yearly Summary
+![Yearly Summary](https://github.com/joachim-fricker/my-activities/blob/master/uiScreenshot/Summary.png?raw=true)
+
+## All Activities
+![All Activities](https://github.com/joachim-fricker/my-activities/blob/master/uiScreenshot/AllActivities.png?raw=true)
+
+## World Map
+
+![World Map ](https://github.com/joachim-fricker/my-activities/blob/master/uiScreenshot/AllActivities.png?raw=true)
+
