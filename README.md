@@ -55,5 +55,5 @@ npm run dev
 
 ## World Map
 
-![World Map ](https://github.com/joachim-fricker/my-activities/blob/master/uiScreenshot/AllActivities.png?raw=true)
+![World Map ](https://github.com/joachim-fricker/my-activities/blob/master/uiScreenshot/WorldMap.png?raw=true)
 
