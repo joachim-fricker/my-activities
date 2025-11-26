@@ -11,6 +11,16 @@ garmin-backup --password XXXX joachim_fricker@yahoo.com -f json_summary
 
 Node.js must be installed see https://learn.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-windows for installing on windows
 
+On linux i used nvm
+```
+sudo apt update
+sudo apt install -y curl wget build-essential
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+nvm install 24
+nvm use 24
+
+```
+
 # Loading the data into the database
 
  ``node ./import-json-files.js``
