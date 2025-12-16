@@ -36,8 +36,8 @@ export default {
         const onClick = (event) => {
             let track = event.target.track ;
             let filename = track.filename;
-            let newFilename = filename.replace('_summary.json', '.gpx');
-            var gpxTrack = new L.GPX('http://localhost:3000/activities/' + newFilename, {
+            let newFilename = filename.replace('.json', '.gpx');
+            var gpxTrack = new L.GPX('http://localhost:3000/exports/activities/' + newFilename, {
                 async: true,
                 markers: {
                     startIcon: 'src/assets/pin-icon-start.png',
@@ -65,7 +65,7 @@ export default {
                             //  console.log("Ignoring due to missing coordinates:", track.activityName);
                         }
                     } else {
-                        // console.log("Ignoring virtual_ride:", track.activityName);
+                         // console.log("Ignoring virtual_ride:", track.activityName);
                     }
                 });
             } catch (error) {

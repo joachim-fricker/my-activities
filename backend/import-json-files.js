@@ -4,8 +4,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import minimist from 'minimist';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // global argv for CLI flags
 var argv;
@@ -15,6 +13,17 @@ class JsonToSQLite {
         this.dbPath = dbPath;
         this.db = null;
     }
+
+    // remove DB file
+    async removeDbFile() {
+        try {
+            await fs.unlink(this.dbPath);
+        }
+        catch (error) {
+            console.error('❌ Error coul dnot delete db file', error);
+        }
+    }
+
 
     // open DB connection
     async connect() {
@@ -170,17 +179,17 @@ class JsonToSQLite {
 
                             const jsonData = ret.data || {};
                             const filename = ret.filename || null;
-                            const uuid = (jsonData.activityUUID && jsonData.activityUUID.uuid) ? jsonData.activityUUID.uuid : null;
+                            const uuid = jsonData.activityId;
                             const activityName = jsonData.activityName || null;
-                            const activityType = (jsonData.activityTypeDTO && jsonData.activityTypeDTO.typeKey) ? jsonData.activityTypeDTO.typeKey : null;
-                            const distance = (jsonData.summaryDTO && typeof jsonData.summaryDTO.distance !== 'undefined') ? jsonData.summaryDTO.distance : null;
-                            const duration = (jsonData.summaryDTO && typeof jsonData.summaryDTO.duration !== 'undefined') ? jsonData.summaryDTO.duration : null;
-                            const startTime = (jsonData.summaryDTO && jsonData.summaryDTO.startTimeGMT) ? jsonData.summaryDTO.startTimeGMT : null;
-                            const startLatitude = (jsonData.summaryDTO && typeof jsonData.summaryDTO.startLatitude !== 'undefined') ? jsonData.summaryDTO.startLatitude : null;
-                            const startLongitude = (jsonData.summaryDTO && typeof jsonData.summaryDTO.startLongitude !== 'undefined') ? jsonData.summaryDTO.startLongitude : null;
-                            const elevationGain = (jsonData.summaryDTO && typeof jsonData.summaryDTO.elevationGain !== 'undefined') ? jsonData.summaryDTO.elevationGain : null;
-                            const maxElevation = (jsonData.summaryDTO && typeof jsonData.summaryDTO.maxElevation !== 'undefined') ? jsonData.summaryDTO.maxElevation : null;
-                            const averageHR = (jsonData.summaryDTO && typeof jsonData.summaryDTO.averageHR !== 'undefined') ? jsonData.summaryDTO.averageHR : null;
+                            const activityType = jsonData.activityType.typeKey;
+                            const distance = jsonData.distance;
+                            const duration = jsonData.duration
+                            const startTime = jsonData.startTimeLocal;
+                            const startLatitude = jsonData.startLatitude;
+                            const startLongitude = jsonData.startLongitude;
+                            const elevationGain = jsonData.elevationGain
+                            const maxElevation = jsonData.maxElevation;
+                            const averageHR = jsonData.averageHR;
                             const locationName = jsonData.locationName || null;
 
                             // Use function callback to access this.lastID if needed
@@ -212,6 +221,7 @@ class JsonToSQLite {
     // main processing function
     async processDirectory(directoryPath) {
         try {
+            await this.removeDbFile();
             await this.connect();
             await this.createTable();
 
@@ -270,7 +280,7 @@ class JsonToSQLite {
 
 // CLI entrypoint
 async function main() {
-    const directoryPath = './activities';
+    const directoryPath = './exports/activities';
 
     argv = minimist(process.argv.slice(2), {
         boolean: ['nocleanup'],
@@ -289,7 +299,7 @@ async function main() {
         await processor.processDirectory(directoryPath);
 
     } catch (error) {
-        console.error(`❌ Verzeichnis ${directoryPath} existiert nicht oder ist nicht zugänglich`);
+        console.error(`❌ Directory ${directoryPath} does not exist or is not accessible.`);
         process.exit(1);
     }
 }

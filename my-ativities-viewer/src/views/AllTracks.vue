@@ -92,10 +92,10 @@ export default {
             });
             leafletMap.setView([event.data.startLatitude, event.data.startLongitude], 13);
             let filename = event.data.filename;
-            let newFilename = filename.replace('_summary.json', '.gpx');
+            let newFilename = filename.replace('.json', '.gpx');
             selectedActivity.value.activityName = event.data.activityName;
             selectedActivity.value.startTime = event.data.startTime;
-            var gpxTrack = new L.GPX('http://localhost:3000/activities/' + newFilename, {
+            var gpxTrack = new L.GPX('http://localhost:3000/exports/activities/' + newFilename, {
                 async: true,
                 markers: {
                     startIcon: 'src/assets/pin-icon-start.png',
